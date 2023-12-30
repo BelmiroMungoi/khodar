@@ -3,7 +3,7 @@ package com.bbm.khodar.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @Getter
@@ -20,7 +20,7 @@ public class Event {
     private Long id;
     private String title;
     private String description;
-    private LocalDateTime date;
+    private LocalDate event_date;
     private String start_time;
     private String end_time;
     private int eventLimit;

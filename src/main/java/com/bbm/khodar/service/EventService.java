@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface EventService {
 
-    HttpResponse createEvent(EventRequest eventRequest);
+    HttpResponse createEvent(EventRequest eventRequest, Long communityId);
     List<EventResponse> findAllEvents();
 }
