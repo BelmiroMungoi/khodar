@@ -2,17 +2,23 @@ package com.bbm.khodar.mapper;
 
 import com.bbm.khodar.dto.response.CommunityResponse;
 import com.bbm.khodar.dto.response.EventResponse;
+import com.bbm.khodar.dto.response.TicketResponse;
 import com.bbm.khodar.model.Community;
 import com.bbm.khodar.model.Event;
+import com.bbm.khodar.model.Ticket;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
+@Component
 public class Mapper {
 
-    private static ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
 
     public static CommunityResponse mapToCommunityResponse(Community community) {
         CommunityResponse communityResponse = new CommunityResponse();
@@ -34,12 +40,21 @@ public class Mapper {
         return communityResponses;
     }
 
-    public static EventResponse mapToEventResponse(Event event) {
+    public EventResponse mapToEventResponse(Event event) {
         return modelMapper.map(event, EventResponse.class);
     }
 
-    public static List<EventResponse> mapToEventResponseList(List<Event> events) {
-        return events.stream().map(event ->
-                mapToEventResponse(event)).collect(Collectors.toList());
+    public List<EventResponse> mapToEventResponseList(List<Event> events) {
+        return events.stream().map(this::mapToEventResponse)
+                .collect(Collectors.toList());
+    }
+
+    public TicketResponse mapToTicketResponse(Ticket ticket) {
+        return modelMapper.map(ticket, TicketResponse.class);
+    }
+
+    public List<TicketResponse> mapToTicketResponseList(List<Ticket> tickets) {
+        return tickets.stream().map(this::mapToTicketResponse)
+                .collect(Collectors.toList());
     }
 }

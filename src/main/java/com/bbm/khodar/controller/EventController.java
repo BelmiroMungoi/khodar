@@ -27,4 +27,14 @@ public class EventController {
     public ResponseEntity<List<EventResponse>> findAllEvents() {
         return ResponseEntity.ok(eventService.findAllEvents());
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<EventResponse> findEventById(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(eventService.findEventById(id));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<HttpResponse> updateEvent(@RequestBody EventRequest request, @PathVariable("id") Long id) {
+        return ResponseEntity.ok(eventService.update(request, id));
+    }
 }

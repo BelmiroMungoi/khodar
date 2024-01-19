@@ -3,6 +3,8 @@ package com.bbm.khodar.service.impl;
 import com.bbm.khodar.dto.request.EventRequest;
 import com.bbm.khodar.dto.response.EventResponse;
 import com.bbm.khodar.dto.response.HttpResponse;
+import com.bbm.khodar.exception.EntityNotFoundException;
+import com.bbm.khodar.mapper.Mapper;
 import com.bbm.khodar.model.Community;
 import com.bbm.khodar.model.Event;
 import com.bbm.khodar.repository.EventRepository;
@@ -11,12 +13,13 @@ import com.bbm.khodar.service.EventService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static com.bbm.khodar.mapper.Mapper.mapToEventResponseList;
 import static com.bbm.khodar.utils.KhodarUtils.EVENT_CREATED_SUCCESSFULLY;
+import static com.bbm.khodar.utils.KhodarUtils.EVENT_UPDATED_SUCCESSFULLY;
 
 @Service
 @RequiredArgsConstructor
@@ -24,8 +27,10 @@ public class EventServiceImpl implements EventService {
 
     private final EventRepository eventRepository;
     private final CommunityService communityService;
+    private final Mapper mapper;
 
     @Override
+    @Transactional
     public HttpResponse createEvent(EventRequest eventRequest, Long communityId) {
         Community community = communityService.getCommunityById(communityId);
 
@@ -38,15 +43,47 @@ public class EventServiceImpl implements EventService {
                 .event_date(eventRequest.getDate())
                 .community(community)
                 .build();
-      eventRepository.save(event);
+        eventRepository.save(event);
 
         return httpResponse(HttpStatus.CREATED,
                 EVENT_CREATED_SUCCESSFULLY);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<EventResponse> findAllEvents() {
-        return mapToEventResponseList(eventRepository.findAll());
+        return mapper.mapToEventResponseList(eventRepository.findAll());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public EventResponse findEventById(Long id) {
+        var event = eventRepository.findById(id).orElseThrow(() ->
+                new EntityNotFoundException("O evento inserido não foi encontrado"));
+        return mapper.mapToEventResponse(event);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Event getEventById(Long id) {
+        return eventRepository.findById(id).orElseThrow(() ->
+                new EntityNotFoundException("O evento inserido não foi encontrado"));
+    }
+
+    @Override
+    @Transactional
+    public HttpResponse update(EventRequest eventRequest, Long eventId) {
+        Event event = getEventById(eventId);
+        event.setTitle(eventRequest.getTitle());
+        event.setDescription(eventRequest.getDescription());
+        event.setEvent_date(eventRequest.getDate());
+        event.setEventLimit(eventRequest.getEventLimit());
+        event.setStart_time(eventRequest.getStart_time());
+        event.setEnd_time(event.getEnd_time());
+        eventRepository.save(event);
+
+        return httpResponse(HttpStatus.OK,
+                EVENT_UPDATED_SUCCESSFULLY);
     }
 
     private static HttpResponse httpResponse(HttpStatus status, String message) {

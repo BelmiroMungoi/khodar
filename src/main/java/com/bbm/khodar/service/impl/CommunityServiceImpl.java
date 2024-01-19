@@ -51,6 +51,7 @@ public class CommunityServiceImpl implements CommunityService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public CommunityResponse findCommunityById(Long id) {
         var community = communityRepository.findById(id).orElseThrow(() ->
                 new EntityNotFoundException("A comunidade inserida não foi encontrada"));
