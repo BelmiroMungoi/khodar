@@ -3,6 +3,7 @@ package com.bbm.khodar.service.impl;
 import com.bbm.khodar.dto.request.TicketRequest;
 import com.bbm.khodar.dto.response.HttpResponse;
 import com.bbm.khodar.dto.response.TicketResponse;
+import com.bbm.khodar.exception.BadRequestException;
 import com.bbm.khodar.mapper.Mapper;
 import com.bbm.khodar.model.Event;
 import com.bbm.khodar.model.Ticket;
@@ -23,6 +24,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 public class TicketServiceImpl implements TicketService {
 
     private final Mapper mapper;
+    private final EmailService emailService;
     private final EventService eventService;
     private final TicketRepository ticketRepository;
 
@@ -30,14 +32,20 @@ public class TicketServiceImpl implements TicketService {
     @Transactional
     public HttpResponse createTicket(TicketRequest request, Long eventId) {
         Event event = eventService.getEventById(eventId);
-
+        if (ticketRepository.existsByAttendeeEmailAndEvent(request.getAttendeeEmail(), event)) {
+            throw new BadRequestException("Você já está inscrito pra esse evento! Verifique o seu email!");
+        }
         Ticket ticketToBeSaved = Ticket.builder()
-                .attendee_name(request.getAttendee_name())
-                .attendee_email(request.getAttendee_email())
+                .attendeeName(request.getAttendeeName())
+                .attendeeEmail(request.getAttendeeEmail())
                 .isChecked(false)
                 .event(event)
                 .build();
         ticketRepository.save(ticketToBeSaved);
+
+        emailService.sendEmail(request.getAttendeeName(),
+                request.getAttendeeEmail(),
+                event.getTitle());
 
         return HttpResponse.builder()
                 .responseCode(CREATED.value())

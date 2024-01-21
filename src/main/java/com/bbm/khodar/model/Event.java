@@ -20,9 +20,9 @@ public class Event {
     private Long id;
     private String title;
     private String description;
-    private LocalDate event_date;
-    private String start_time;
-    private String end_time;
+    private LocalDate eventDate;
+    private String startTime;
+    private String endTime;
     private int eventLimit;
 
     @ManyToOne
@@ -31,4 +31,7 @@ public class Event {
 
     @OneToMany(mappedBy = "event")
     private List<Ticket> tickets;
+
+    @OneToMany(mappedBy = "event")
+    private List<Image> images;
 }

@@ -38,9 +38,9 @@ public class EventServiceImpl implements EventService {
                 .title(eventRequest.getTitle())
                 .description(eventRequest.getDescription())
                 .eventLimit(eventRequest.getEventLimit())
-                .start_time(eventRequest.getStart_time())
-                .end_time(eventRequest.getEnd_time())
-                .event_date(eventRequest.getDate())
+                .startTime(eventRequest.getStartTime())
+                .endTime(eventRequest.getEndTime())
+                .eventDate(eventRequest.getDate())
                 .community(community)
                 .build();
         eventRepository.save(event);
@@ -76,10 +76,10 @@ public class EventServiceImpl implements EventService {
         Event event = getEventById(eventId);
         event.setTitle(eventRequest.getTitle());
         event.setDescription(eventRequest.getDescription());
-        event.setEvent_date(eventRequest.getDate());
+        event.setEventDate(eventRequest.getDate());
         event.setEventLimit(eventRequest.getEventLimit());
-        event.setStart_time(eventRequest.getStart_time());
-        event.setEnd_time(event.getEnd_time());
+        event.setStartTime(eventRequest.getStartTime());
+        event.setEndTime(event.getEndTime());
         eventRepository.save(event);
 
         return httpResponse(HttpStatus.OK,

@@ -15,8 +15,8 @@ public class Ticket {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String attendee_name;
-    private String attendee_email;
+    private String attendeeName;
+    private String attendeeEmail;
     private boolean isChecked;
 
     @ManyToOne

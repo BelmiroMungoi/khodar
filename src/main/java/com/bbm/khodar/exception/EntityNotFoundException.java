@@ -1,6 +1,6 @@
 package com.bbm.khodar.exception;
 
-public class EntityNotFoundException extends RuntimeException{
+public class EntityNotFoundException extends BadRequestException {
 
     public EntityNotFoundException(String msg) {
         super(msg);
