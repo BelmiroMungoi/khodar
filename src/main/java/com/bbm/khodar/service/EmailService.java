@@ -1,4 +1,4 @@
-package com.bbm.khodar.service.impl;
+package com.bbm.khodar.service;
 
 public interface EmailService {
 
