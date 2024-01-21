@@ -8,6 +8,7 @@ import com.bbm.khodar.mapper.Mapper;
 import com.bbm.khodar.model.Event;
 import com.bbm.khodar.model.Ticket;
 import com.bbm.khodar.repository.TicketRepository;
+import com.bbm.khodar.service.EmailService;
 import com.bbm.khodar.service.EventService;
 import com.bbm.khodar.service.TicketService;
 import lombok.RequiredArgsConstructor;

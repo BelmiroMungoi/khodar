@@ -1,5 +1,6 @@
 package com.bbm.khodar.service.impl;
 
+import com.bbm.khodar.service.EmailService;
 import com.bbm.khodar.utils.EmailUtils;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
