@@ -4,6 +4,7 @@ import com.bbm.khodar.dto.request.EventRequest;
 import com.bbm.khodar.dto.response.EventResponse;
 import com.bbm.khodar.dto.response.HttpResponse;
 import com.bbm.khodar.service.EventService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,7 @@ public class EventController {
     private final EventService eventService;
 
     @PostMapping("/{id}")
-    public ResponseEntity<HttpResponse> createEvent(@RequestBody EventRequest request, @PathVariable("id") Long id){
+    public ResponseEntity<HttpResponse> createEvent(@Valid @RequestBody EventRequest request, @PathVariable("id") Long id){
         return new ResponseEntity<>(eventService.createEvent(request, id), HttpStatus.CREATED);
     }
 
@@ -34,7 +35,7 @@ public class EventController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<HttpResponse> updateEvent(@RequestBody EventRequest request, @PathVariable("id") Long id) {
+    public ResponseEntity<HttpResponse> updateEvent(@Valid @RequestBody EventRequest request, @PathVariable("id") Long id) {
         return ResponseEntity.ok(eventService.update(request, id));
     }
 }

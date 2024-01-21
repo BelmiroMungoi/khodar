@@ -4,6 +4,7 @@ import com.bbm.khodar.dto.request.CommunityRequest;
 import com.bbm.khodar.dto.response.CommunityResponse;
 import com.bbm.khodar.dto.response.HttpResponse;
 import com.bbm.khodar.service.CommunityService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,7 @@ public class CommunityController {
     private final CommunityService communityService;
 
     @PostMapping("/")
-    public ResponseEntity<HttpResponse> createCommunity(@RequestBody CommunityRequest request) {
+    public ResponseEntity<HttpResponse> createCommunity(@Valid @RequestBody CommunityRequest request) {
         return new ResponseEntity<>(communityService.create(request), HttpStatus.CREATED);
     }
 
@@ -34,7 +35,7 @@ public class CommunityController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<HttpResponse> updateCommunity(@RequestBody CommunityRequest request,@PathVariable("id") Long id) {
+    public ResponseEntity<HttpResponse> updateCommunity(@Valid @RequestBody CommunityRequest request,@PathVariable("id") Long id) {
         return ResponseEntity.ok(communityService.update(request, id));
     }
 }

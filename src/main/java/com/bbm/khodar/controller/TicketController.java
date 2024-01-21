@@ -4,6 +4,7 @@ import com.bbm.khodar.dto.request.TicketRequest;
 import com.bbm.khodar.dto.response.HttpResponse;
 import com.bbm.khodar.dto.response.TicketResponse;
 import com.bbm.khodar.service.TicketService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,9 +21,9 @@ public class TicketController {
     private final TicketService ticketService;
 
     @PostMapping("/{id}")
-    public ResponseEntity<HttpResponse> create(@RequestBody TicketRequest request,
+    public ResponseEntity<HttpResponse> create(@Valid @RequestBody TicketRequest request,
                                                @PathVariable("id") Long eventId) {
-        return new ResponseEntity<>(ticketService.createTicket(request,eventId), CREATED);
+        return new ResponseEntity<>(ticketService.createTicket(request, eventId), CREATED);
     }
 
     @GetMapping
