@@ -1,15 +1,24 @@
 package com.bbm.khodar.service.impl;
 
+import com.bbm.khodar.dto.request.AuthenticationRequest;
 import com.bbm.khodar.dto.request.CommunityRequest;
 import com.bbm.khodar.dto.response.CommunityResponse;
 import com.bbm.khodar.dto.response.HttpResponse;
+import com.bbm.khodar.dto.response.TokenResponse;
 import com.bbm.khodar.exception.BadRequestException;
 import com.bbm.khodar.exception.EntityNotFoundException;
 import com.bbm.khodar.model.Community;
+import com.bbm.khodar.model.Token;
+import com.bbm.khodar.model.enums.Role;
 import com.bbm.khodar.repository.CommunityRepository;
+import com.bbm.khodar.repository.TokenRepository;
+import com.bbm.khodar.security.JwtService;
 import com.bbm.khodar.service.CommunityService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,7 +34,11 @@ import static com.bbm.khodar.utils.KhodarUtils.ACCOUNT_UPDATED_SUCCESSFULLY;
 @RequiredArgsConstructor
 public class CommunityServiceImpl implements CommunityService {
 
+    private final TokenRepository tokenRepository;
     private final CommunityRepository communityRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
 
     @Override
     @Transactional
@@ -39,7 +52,8 @@ public class CommunityServiceImpl implements CommunityService {
                 .email(communityRequest.getEmail())
                 .description(communityRequest.getDescription())
                 .website(communityRequest.getWebsite())
-                .password(communityRequest.getPassword())
+                .password(passwordEncoder.encode(communityRequest.getPassword()))
+                .role(Role.ADMIN)
                 .createdAt(LocalDateTime.now())
                 .build();
         communityRepository.save(community);
@@ -82,6 +96,32 @@ public class CommunityServiceImpl implements CommunityService {
 
         return httpResponse(HttpStatus.OK,
                 ACCOUNT_UPDATED_SUCCESSFULLY);
+    }
+
+    @Override
+    public TokenResponse login(AuthenticationRequest request) {
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getEmail(),
+                        request.getPassword()
+                )
+        );
+        var community = communityRepository.findByEmail(request.getEmail()).orElseThrow();
+        var jwtToken = jwtService.generateToken(community);
+        saveUserToken(community, jwtToken);
+        return TokenResponse.builder()
+                .accessToken(jwtToken)
+                .build();
+    }
+
+    private void saveUserToken(Community community, String jwtToken) {
+        var token = Token.builder()
+                .community(community)
+                .token(jwtToken)
+                .expired(false)
+                .revoked(false)
+                .build();
+        tokenRepository.save(token);
     }
 
     private static HttpResponse httpResponse(HttpStatus status, String message) {
