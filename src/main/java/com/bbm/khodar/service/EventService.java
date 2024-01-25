@@ -13,6 +13,8 @@ public interface EventService {
 
     List<EventResponse> findAllEvents();
 
+    List<EventResponse> findAllEventsByCommunityId(Long communityId);
+
     EventResponse findEventById(Long id);
 
     Event getEventById(Long id);

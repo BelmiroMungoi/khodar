@@ -56,6 +56,12 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    public List<EventResponse> findAllEventsByCommunityId(Long communityId) {
+        var events = eventRepository.findAllByCommunityId(communityId);
+        return mapper.mapToEventResponseList(events);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public EventResponse findEventById(Long id) {
         var event = eventRepository.findById(id).orElseThrow(() ->

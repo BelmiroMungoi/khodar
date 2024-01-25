@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 
@@ -21,6 +22,7 @@ public class EmailServiceImpl implements EmailService {
     private String username;
     private final JavaMailSender javaMailSender;
 
+    @Async
     public void sendEmail(String name, String destination, String eventName) {
         try {
 
